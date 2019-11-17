@@ -87,10 +87,7 @@ pages
                 submit() {
                     var _this = this
                     var params = {
-                        name: this.name.value,
-                        idGroup: self.selectedCategory,
-                        idBrand: self.selectedBrand,
-                        curr: self.basecurr
+                        name: this.name.value
                     }
                     _this.error = _this.validation.validate(_this.item, _this.rules)
                     if (!_this.error) {

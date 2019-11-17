@@ -59,3 +59,12 @@ project
             self.tab = 'project'
             self.update()
         })
+
+        route('/site..', () => {
+            self.update({edit: true, tab: 'not-found'})
+            observable.trigger('not-found')
+        })
+
+        self.on('mount', () => {
+            riot.route.exec()
+        })
