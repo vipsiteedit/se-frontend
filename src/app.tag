@@ -11,6 +11,7 @@
 | import 'pages/images/images.tag'
 | import 'pages/settings/settings.tag'
 | import 'pages/payments/payments.tag'
+| import 'pages/structure/project.tag'
 | import 'pages/analytics/analytics.tag'
 | import 'pages/not-found.tag'
 | import 'pages/settings/add-fields/add-fields-edit-block.tag'
@@ -102,6 +103,7 @@ app
                 user-reviews(if='{ tab == "reviews" }')
                 images(if='{ tab == "images" }')
                 sections(if='{ tab == "sections" }')
+                project(if='{ tab == "site" }')
                 analytics(if='{ tab == "analytics" }')
                 settings(if='{ tab == "settings" }')
                 not-found(if='{ tab == "not-found" }')
@@ -180,6 +182,7 @@ app
             {title: 'Отзывы', name: 'reviews', link: 'reviews', permission: 'reviews', icon: 'fa-comment-o'},
             {title: 'Разделы', name: 'sections', link: 'sections', permission: 'sections', icon: 'fa-file-text'},
             {title: 'Картинки', name: 'images', link: 'images/products', permission: 'images', icon: 'fa-picture-o'},
+            {title: 'Сайт', name: 'site', link: 'site/pages', permission: 'site', icon: 'fa-newspaper-o'},
             {title: 'Настройки', name: 'settings', link: 'settings', permission: '', icon: 'fa-cogs'},
         ]
 
