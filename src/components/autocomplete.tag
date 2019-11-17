@@ -105,9 +105,8 @@ autocomplete
 	script(type='text/babel').
 		var self = this
 		self.filterValue = ''
-
+		self.nofilter = opts.noFilter
 		self.value = opts.value
-
 		Object.defineProperty(self.root, 'value', {
 			get() {
 				return self.value
@@ -154,13 +153,12 @@ autocomplete
 
 		self.filter = () => {
 			let value = self.filterValue
-
 			if (parseInt(opts.minSymbols))
 				if (value.length < parseInt(opts.minSymbols))
 					return []
-			else if (value == '')
-				return self.data
-
+			    else if (value == '')
+				    return self.data
+			if (self.nofilter) return self.data
 			return self.data.filter(item => {
 				return item[self.valueField].toLowerCase().indexOf(value.toLowerCase()) !== -1
 			})

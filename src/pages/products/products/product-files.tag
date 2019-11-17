@@ -25,7 +25,7 @@ product-files
                     datatable-cell(name='')
                         input.form-control(value='{ row.fileText }', onchange='{ handlers.fileAltChange }')
                         .help-block
-                            a(href="{ row.fileURL }" target='_blank') { row.fileName }
+                            a(href="{ row.fileURL }" target="_blank") { row.fileName }
 
     style(scoped).
         .icon-file {

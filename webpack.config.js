@@ -53,7 +53,7 @@ module.exports = {
             { test: /\.(woff|woff2)(\?v=\d+\.\d+\.\d+)?$/, loader:"url?limit=10000&mimetype=application/font-woff&name=files/[hash].[ext]" },
             { test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, loader: "url?limit=10000&mimetype=application/octet-stream&name=files/[hash].[ext]" },
             { test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, loader: "url?limit=10000&mimetype=image/svg+xml&name=files/[hash].[ext]" },
-            { test: /\.png$/i, loader: "file?name=files/[hash].[ext]!image-webpack" },
+            { test: /\.png$/i, loader: "file?namne=files/[hash].[ext]!image-webpack" },
             { test: /\.jpe?g$/i, loader: "file?&name=files/[hash].[ext]!image-webpack" }
         ],
     },

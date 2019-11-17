@@ -1,29 +1,33 @@
 | import debounce from 'lodash/debounce'
 | import 'components/treeview.tag'
 
-catalog-tree
+catalog-tree-m
     .row(if='{ opts.add || opts.reload || opts.remove || opts.search }')
         .col-md-8.col-sm-6.col-xs-12
             .form-inline.m-b-2
-                button.btn(if='{ opts.allselect && (totalCount > 0)  }', type='button', class='{ allMode ? "btn-primary" : "btn-default"  }',
-                onclick='{ selectedAll }', title='{ allMode ? "Снять выделение" : "Выделить всё" }')
-                    i.fa(class='{ allMode ? "fa-toggle-on" : "fa-toggle-off" }')
-                button.btn.btn-primary( if='{ opts.add }',                      onclick='{ opts.add }',                         type='button')
-                    i.fa.fa-plus
-                    |  Добавить
-                button.btn.btn-success( if='{ opts.reload }',                   onclick='{ reload }',   title='Обновить',       type='button')
-                    i.fa.fa-refresh
-                button.btn.btn-primary( if='{ opts.deselall }',                 onclick='{ deselAll }', title='Показать все',   type='button')
-                    i.fa.fa-share
-                button.btn.btn-danger(  if='{ opts.remove && selectedCount }',  onclick='{ remove }',   title='Удалить',        type='button')
-                    i.fa.fa-trash { (selectedCount > 1) ? "&nbsp;" : "" }
-                    span.badge(if='{ selectedCount > 1 }') { selectedCount }
+                div(style="float: left;")
+                    button.btn(if='{ opts.allselect && (totalCount > 0)  }', type='button', class='{ allMode ? "btn-primary" : "btn-default"  }',
+                    onclick='{ selectedAll }', title='{ allMode ? "Снять выделение" : "Выделить всё" }')
+                        i.fa(class='{ allMode ? "fa-toggle-on" : "fa-toggle-off" }')
+                    button.btn.btn-primary( if='{ opts.add && !selectedCount  }', onclick='{ opts.add }', type='button')
+                        i.fa.fa-plus
+                        |  {app.ml("Add")}
+                    button.btn.btn-primary( if='{ opts.add && selectedCount }', onclick='{ addTree }', type='button')
+                        i.fa.fa-plus
+                        |  {app.ml("Insert")}
+                    button.btn.btn-success( if='{ opts.reload }',                   onclick='{ reload }',   title='{app.ml("Update")}',       type='button')
+                        i.fa.fa-refresh
+                    button.btn.btn-primary( if='{ opts.deselall }',                 onclick='{ deselAll }', title='{app.ml("Show all")}',   type='button')
+                        i.fa.fa-share
+                    button.btn.btn-danger(  if='{ opts.remove && selectedCount }',  onclick='{ remove }',   title='{app.ml("Delete")}',        type='button')
+                        i.fa.fa-trash { (selectedCount > 1) ? "&nbsp;" : "" }
+                        span.badge(if='{ selectedCount > 1 }') { selectedCount }
                 #{'yield'}(from='head')
         .col-md-4.col-sm-6.col-xs-12
             form.form-inline.text-right.m-b-2
                 .form-group
                     .input-group(if='{ opts.search }')
-                        input.form-control(name='search', type='text', placeholder='Поиск', onkeyup='{ find }')
+                        input.form-control(name='search', type='text', placeholder='{app.ml("Search")}', onkeyup='{ find }')
                         span.input-group-btn
                             button.btn.btn-default(onclick='{ find }', type='submit')
                                 i.fa.fa-search
@@ -37,7 +41,9 @@ catalog-tree
                 children-field  ='{ opts.childrenField }',
                 loader          ='{ loader }',
                 descendants     ='{ opts.descendants }',
-                dblclick        ='{ opts.dblclick }'
+                dblclick        ='{ opts.dblclick }',
+                is-folder       ='{ opts.isFolder }',
+                reorder         ='{ opts.reorder }'
             )
                 #{'yield'}(to='before')
                     #{'yield'}(from='before')
@@ -46,11 +52,13 @@ catalog-tree
 
     script(type='text/babel').
         var self = this
+        self.app = app
 
         self.mixin('permissions')
         self.allMode = false;
         self.nodes = []
         self.selectedCount = 0
+        self.folderSelect = false
         self.handlers = opts.handlers
 
 
@@ -70,6 +78,15 @@ catalog-tree
 
             if (opts.search && self.search) {
                 params.searchText = self.search.value
+            }
+
+            if (opts.filters && opts.filters instanceof Array)
+                params.filters = opts.filters
+            else
+                params.filters = {}//serializeFilters()
+
+            if (opts.combineFilters && opts.filters && opts.filters instanceof Array) {
+                params.filters = [...opts.filters]
             }
 
             /** API.request
@@ -117,9 +134,21 @@ catalog-tree
             self.allMode = false
             self.selectedCount = 0
             self.tags.treeview.deselectAll()
-            observable.trigger('products-reload', []) // перезагрузка листа товаров
+            observable.trigger(opts.name+'-deselect', []) // перезагрузка листа товаров
         }
 
+        self.afterRemove = () => {
+            self.tags.treeview.removeNodes()
+            self.update()
+        }
+
+        self.addTree = e => {
+            if (opts.add && self.selectedCount) {
+                let items = self.tags.treeview.getSelectedNodes()
+                e.item = items[0]
+                opts.add.bind(this, e)()
+            }
+        }
 
         self.remove = e => {
             /** удалить
@@ -129,17 +158,15 @@ catalog-tree
             var _this = this
 
             let items = self.tags.treeview.getSelectedNodes()
+            //self.tags.treeview.removeNodes()
+
+
             let itemsToRemove = items.map(i => i.id)
 
             if (opts.remove)
                 opts.remove.bind(this, e, itemsToRemove, self)()
 
             //self.deselAll(); //1
-        }
-
-        self.afterRemove = () => {
-            self.tags.treeview.removeNodes()
-            self.update()
         }
 
         self.find = debounce(e => {
@@ -158,7 +185,8 @@ catalog-tree
         })
 
         self.one('updated', () => {
-            self.tags.treeview.on('nodeselect', (item, count) => {
+            self.tags.treeview.on('nodeselect', (item, count, folderSelect) => {
+                self.folderSelect = folderSelect
                 self.selectedCount = count
                 if(self.selectedCount === self.totalCount){
                     self.allMode = true

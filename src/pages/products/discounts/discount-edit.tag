@@ -18,9 +18,9 @@ discount-edit
             li.active #[a(data-toggle='tab', href='#discount-edit-parameters') Параметры]
             li #[a(data-toggle='tab', href='#discount-edit-groups') Группы товаров]
             li #[a(data-toggle='tab', href='#discount-edit-products') Товары]
-            li #[a(data-toggle='tab', href='#discount-edit-personsgroup') Группы Контактов]
-            li #[a(data-toggle='tab', href='#discount-edit-persons') Контакты]
-            li #[a(data-toggle='tab', href='#discount-edit-seo') SEO]
+            li #[a(if='{!item.isAction}' data-toggle='tab', href='#discount-edit-personsgroup') Группы Контактов]
+            li #[a(if='{!item.isAction}' data-toggle='tab', href='#discount-edit-persons') Контакты]
+            li #[a(if='{item.isAction}' data-toggle='tab', href='#discount-edit-seo') SEO]
 
         form(action='', onchange='{ change }', onkeyup='{ change }', method='POST')
             .tab-content
@@ -31,7 +31,7 @@ discount-edit
                                 label.control-label Наименование
                                 input.form-control(name='title', value='{ item.title }')
                                 .help-block { error.title }
-                        .col-md-2
+                        .col-md-2(if='{!item.isAction}')
                             .form-group
                                 label.control-label Тип контакта
                                 select.form-control(name='customerType', value='{ item.customerType }')
@@ -39,7 +39,7 @@ discount-edit
                                     option(value='1') Для физических лиц
                                     option(value='2') Для юридических лиц (компаний)
                                     option(value='3') Все авторизированные
-                        .col-md-3
+                        .col-md-3(if='{!item.isAction}')
                             .form-group
                                 label.control-label Тип значения
                                 select.form-control(name='typeDiscount', value='{ item.typeDiscount }')
@@ -48,6 +48,11 @@ discount-edit
                                     option(value='optcorp') Мелкий орт
                                     option(value='opt') Опт
 
+                        .col-md-5(if='{item.isAction}')
+                            .form-group(class='{ has-error: error.title }')
+                                 label.control-label URL-kod
+                                 input.form-control(name='url', value='{ item.url }')
+                                 input(name='typeDiscount', type='hidden' value='percent')
                         .col-md-3
                             .form-group(if='{ item.typeDiscount == "percent" || item.typeDiscount == "absolute" }')
                                 label.control-label Скидка
@@ -57,13 +62,13 @@ discount-edit
                                         | { item.typeDiscount == 'percent' ? '%' : 'р.' }
 
                     .row
-                        .col-md-2
+                        .col-md-2(if='{!item.isAction}')
                             .form-group
                                 .checkbox-inline
                                     label
                                         input(type='checkbox', checked='{ floatingDiscount }', onchange='{ toggleFloatingDiscount }')
                                         | Плавающая скидка
-                        .col-md-2
+                        .col-md-2(if='{!item.isAction}')
                             .form-group
                                 .checkbox-inline
                                     label
@@ -83,7 +88,7 @@ discount-edit
                         .col-md-10
                             label.control-label Описание акции
                             textarea.form-control(name='description', value='{ item.description}', style='min-height: 165px;')
-                    .row
+                    .row(if='{!item.isAction}')
                         .col-md-6
                             .form-group(if='{ floatingDiscount }')
                                 label.control-label Шаг скидки
@@ -125,7 +130,7 @@ discount-edit
                                         label.control-label Дни недели
                                         br
                                         week-days-checkbox(name='week', value='{ item.week }')
-                    .row
+                    .row(if='{!item.isAction}')
                         .col-md-12
                             .row
                                 .col-md-4
@@ -264,6 +269,7 @@ discount-edit
         }
 
         self.submit = () => {
+            if (self.item.isAction) self.item.typeDiscount = 'percent';
             var params = self.item
 
             self.error = self.validation.validate(self.item, self.rules)
@@ -275,10 +281,12 @@ discount-edit
                     data: params,
                     success(response) {
                         self.item = response
+                        self.update()
                         popups.create({title: 'Успех!', text: 'Скидка сохранена!', style: 'popup-success'})
                         if (self.isNew)
                             riot.route(`products/discounts/${self.item.id}`)
                         observable.trigger('discount-reload')
+                        //self.reload()
                     }
                 })
             }
@@ -300,13 +308,18 @@ discount-edit
                         } else {
                             items = this.tags.catalog.tags.datatable.getSelectedRows()
                         }
+
                         let ids = _this.value.map(item => item.id)
 
+
                         items.forEach(item => {
-                            if (ids.indexOf(item.id) === -1)
+                            if (ids.length == 0 || ids.indexOf(item.id) === -1) {
                                 _this.value.push(item)
+                            }
                         })
 
+                        console.log(_this.value)
+                        self.update()
                         self.update()
                         this.modalHide()
                     }

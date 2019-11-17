@@ -11,7 +11,7 @@ catalog-static
                         i.fa.fa-plus
                         |  Добавить
                 #{'yield'}(from='toolbar')
-                .form-group
+                .form-group(if='{ opts.remove || opts.reorder }')
                     button.btn.btn-danger(if='{ opts.remove && selectedCount }', onclick='{ remove }', title='Удалить', type='button')
                         i.fa.fa-trash { (selectedCount > 1) ? "&nbsp;" : "" }
                         span.badge(if='{ selectedCount > 1 }') { selectedCount }

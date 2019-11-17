@@ -5,7 +5,8 @@ var app = {
     accounts: [],
     permissions: {},
     config: {},
-    mainCookie: ''
+    mainCookie: '',
+    language: {code: 'ru', name: 'Русский' }
 }
 
 riot.observable(app)
@@ -58,6 +59,16 @@ app.login = params => {
                 params.error.bind(this, response)()
         }
     })
+}
+app.ml = (text) => {
+    if (app.language.code) {
+        var res, content = langContent[text]
+        if (content !== undefined)
+            res = content[app.language.code]
+        if (res !== undefined )
+            return res
+    }
+    return text
 }
 
 app.init = () => {

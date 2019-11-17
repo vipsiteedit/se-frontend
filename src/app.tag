@@ -14,6 +14,8 @@
 | import 'pages/analytics/analytics.tag'
 | import 'pages/not-found.tag'
 | import 'pages/settings/add-fields/add-fields-edit-block.tag'
+
+
 | import parallel from 'async/parallel'
 
 // ГЛАВНАЯ СТРАНИЦА МЕНЕДЖЕРА
@@ -150,6 +152,8 @@ app
                     return;
                 }
                 let idx = self.sidebar.map(item => item.name).indexOf(tab)
+
+
                 if (idx !== -1 && self.checkPermission(self.sidebar[idx].permission, 1000)) {
                     var item = self.sidebar.filter(item => item.name === tab)
                     self.headTitle = item[0].title

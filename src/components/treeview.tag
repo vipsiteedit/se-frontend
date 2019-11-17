@@ -7,7 +7,9 @@ treeview
         treeview       = '{ this }',
         label-field    = '{ labelField }',
         children-field = '{ childrenField }',
-        dblclick       = '{ opts.dblclick }'
+        dblclick       = '{ opts.dblclick }',
+        is-folder         ='{ opts.isFolder }',
+        reorder        ='{ opts.reorder }',
     )
         #{'yield'}(to='before')
             #{'yield'}(from='before')
@@ -44,6 +46,7 @@ treeview
         }
 
         self.deselectAll = (nodes = self.nodes) => {
+            self.folderSelect = 0
             if (nodes instanceof Array) {
                 nodes.forEach(item => {
                     item.__selected__ = false
@@ -176,16 +179,29 @@ treenodes
         li
             div(class='treenode{ __selected__ ? " selected" : "" }', title='{ title }',
             onclick='{ select }', ondblclick='{ dblclick }')
-                span(class='icon { this[parent.childrenField].length ? expanded ? css.open  : css.closed : css.leaf }', onclick='{ toggleExpand }')
+                span(if='{ parent.isFolder && _DIR_}', class="fa fa-folder{ this[parent.childrenField].length ? expanded ? '-open'  : '' : '-o'}", onclick='{ toggleExpand }')
+                span(if='{ parent.isFolder && !_DIR_}', class="fa fa-file-text-o", onclick='{ open }')
+                span(if='{ !parent.isFolder }', class='icon { this[parent.childrenField].length ? expanded ? css.open  : css.closed : css.leaf }', onclick='{ toggleExpand }')
                 #{'yield'}(from='before')
                 span(class='{ this[parent.childrenField].length ? "" : "leaf" }', draggable="true", ondragstart='{ handleDragStart }',
                 ondragenter='{ handleDragEnter }', ondragover='{ handleDragOver }', ondragleave='{ handleDragLeave }',
-                ondrop='{ handleDrop }', ondragend='{ handleDragEnd }') { this[parent.labelField] }
+                ondrop='{ handleDrop }', ondragend='{ handleDragEnd }')
+                i(if='{this["icon"]}' class='{this["icon"]}')
+                |  { this[parent.labelField] }
                 #{'yield'}(from='after')
             hr(class='drop', ondragenter='{ handleDragEnterHr }', ondragleave='{ handleDragLeaveHr }', ondragover='{ handleDragOverHr }',
                 ondrop='{ handleDropHr }')
-            treenodes(nodes='{ this[parent.childrenField] }', dblclick='{ dblclick }', handler='{ parent.handler }', css='{ parent.css }', if='{ expanded }',
-            handlers='{ handlers }', treeview='{ treeview }', label-field='{ labelField }', children-field='{ childrenField }')
+            treenodes(nodes='{ this[parent.childrenField] }',
+            dblclick='{ dblclick }',
+            handler='{ parent.handler }',
+            css='{ parent.css }',
+            if='{ expanded }',
+            handlers='{ handlers }',
+            treeview='{ treeview }',
+            label-field='{ labelField }',
+            children-field='{ childrenField }',
+            reorder='{ reorder }',
+            is-folder='{ isFolder }')
                 #{'yield'}(to='before')
                     #{'yield'}(from='before')
                 #{'yield'}(to='after')
@@ -195,7 +211,7 @@ treenodes
         ul {
             list-style: none;
             padding-left: 2em;
-            margin: 0.25em 0;
+            margin: 0.15em 0;
         }
         li {
             cursor: pointer;
@@ -211,8 +227,8 @@ treenodes
         }
         hr.drop {
             margin: 0;
-            padding-top: 3px;
-            padding-bottom: 3px;
+            padding-top: 1px;
+            padding-bottom: 1px;
             border: 0;
             border-top: 1px solid #fff;
         }
@@ -225,9 +241,12 @@ treenodes
     script(type='text/babel').
         var self = this
 
+        self.reorder = opts.reorder
         self.treeview = opts.treeview
         self.labelField = opts.labelField || 'label'
         self.childrenField = opts.childrenField || 'children'
+        self.isFolder = opts.isFolder || false
+        self.folderSelect = false
 
         self.nodes = opts.nodes || []
 
@@ -248,7 +267,9 @@ treenodes
         }
 
         self.handleDragStart = e => {
-            e.target.style.opacity = 0.5;
+            if (!self.reorder) return
+            if (e.target.style)
+                e.target.style.opacity = 0.5;
             e.dataTransfer.effectAllowed = 'move';
             e.dataTransfer.setData('json', JSON.stringify(e.item));
             return true;
@@ -259,6 +280,7 @@ treenodes
         }
 
         self.handleDragEnterHr = e => {
+            if (!self.reorder) return
             e.target.classList.add('highlight')
         }
 
@@ -280,11 +302,25 @@ treenodes
             e.target.classList.remove('highlight')
         }
 
+        function checkParent(id, item) {
+            let parent = item.__parent__  || false
+            if (parent &&  typeof(parent) == 'object') {
+                if (parent.id == id) {
+                    return true;
+                } else {
+                    return checkParent(id, parent)
+                }
+            }
+        }
+
 
         self.handleDrop = e => {
             e.target.classList.remove('highlight')
             var dataTransfer = JSON.parse(e.dataTransfer.getData("json"))
-            if (dataTransfer.id == e.item.id) {
+
+            if (dataTransfer.id == e.item.id || (opts.isFolder && !e.item._DIR_)
+            || checkParent(dataTransfer.id, e.item)
+            ) {
                 e.stopPropagation();
                 return false;
             }
@@ -298,13 +334,17 @@ treenodes
         self.handleDropHr = e => {
             e.target.classList.remove('highlight')
             var dataTransfer = JSON.parse(e.dataTransfer.getData("json"))
-            if (dataTransfer.id == e.item.id) {
+            //console.log('handleDrop2:', dataTransfer.id, e.item.id)
+            if (dataTransfer.id == e.item.id
+            || e.item.idParent == dataTransfer.id
+            || (opts.isFolder && !e.item._DIR_)) {
                 e.stopPropagation();
                 return false;
             }
 
-            if (e.item.upid != dataTransfer.upid) {
-                let itemParent = e.item.upid ? self.getItemById(self.treeview.nodes, e.item.upid) : null
+
+            if (e.item.idParent != dataTransfer.idParent) {
+                let itemParent = e.item.idParent ? self.getItemById(self.treeview.nodes, e.item.idParent) : null
                 self.changeParent(self.treeview.nodes, itemParent, dataTransfer.id)
             }
 
@@ -315,7 +355,8 @@ treenodes
         }
 
         self.handleDragEnd = e => {
-            e.target.style.opacity = 1
+            if (e.target.style)
+                e.target.style.opacity = 1
             self.update()
         }
 
@@ -340,8 +381,14 @@ treenodes
             return null
         }
 
+        self.open = e => {
+            e.stopPropagation()
+        }
+
         self.changeParent = (nodes, itemParent, id) => {
             let indexDel = -1;
+
+            //console.log('changeParent:', itemParent, id)
 
             nodes.forEach((item, i) => {
                 if (item.id == id) {
@@ -357,9 +404,13 @@ treenodes
                 if (itemParent) {
                     if (itemParent[self.childrenField].length > 0)
                         position = itemParent[self.childrenField][itemParent[self.childrenField].length - 1].position + 1
+                    item.__parent__ = itemParent
                     itemParent[self.childrenField].push(item)
                     idParent = itemParent.id
-                } else self.treeview.nodes.push(item)
+                } else {
+                    item__parent__ = []
+                    self.treeview.nodes.push(item)
+                }
 
 
                 if ('afterChangeParent' in self.handlers && typeof(self.handlers.afterChangeParent) === 'function')
@@ -434,9 +485,14 @@ treenodes
                 }
                 self.treeview.update()
             }
+            if (e.item._DIR_) {
+                self.folderSelect = true
+            } else {
+                self.folderSelect = false
+            }
 
             let count = self.treeview.getSelectedNodes().length
-            self.treeview.trigger('nodeselect', e.item, count)
+            self.treeview.trigger('nodeselect', e.item, count, self.folderSelect)
         }
 
         self.stopPropagation = function (e) {

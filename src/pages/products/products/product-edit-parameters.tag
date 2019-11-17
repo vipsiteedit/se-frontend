@@ -25,6 +25,10 @@ product-edit-parameters
                         onchange='{ handlers.changeColorValue }',
                         add='{ handlers.addParam}')
                             | { item.value }
+                    datatable-cell(name='showVitrine')
+                        button.btn.btn-default.btn-sm(type='button', title='Отобразить в карточке витрины',
+                            onclick='{ handlers.changeShowVitrine }')
+                               i(class='fa { row.showVitrine ? "fa-eye text-active" : "fa-eye-slash text-noactive" } ')
                     datatable-cell(name='modificationId')
                         select.form-control(name='idModification', value='{ row.idModification}', onchange='{ handlers.changeselect }')
                             option(value='') Для всех
@@ -49,6 +53,7 @@ product-edit-parameters
         self.parametersCols = [
             {name: 'name', value: 'Наименование'},
             {name: 'value', value: 'Значение'},
+            {name: 'showVitrine', value: ''},
             {name: 'modificationId', value: 'Модификация'},
         ]
 
@@ -86,7 +91,7 @@ product-edit-parameters
                 }
             })
         }
-        console.log(opts)
+
         // Параметры Обработчики
         self.parametersHandlers = {
             getOptions(id) {
@@ -114,6 +119,11 @@ product-edit-parameters
             // переключатель
             toggleCheckbox(e) {
                 this.row.valueBool = !this.row.value
+            },
+            changeShowVitrine(e) {
+                var _this = this
+                _this.row.showVitrine = !_this.row.showVitrine
+                self.update()
             },
             // изменить значение
             changeValue(e) {
