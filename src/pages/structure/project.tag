@@ -1,3 +1,6 @@
+| import './pages/pages.tag'
+| import './pages/page-edit.tag'
+
 project
     ul(if='{ !edit }').nav.nav-tabs.m-b-2
         li(each='{ tabs }', class='{ active: name == tab }', title='{ title }', if='{ access }')
