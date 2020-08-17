@@ -14,6 +14,7 @@ groups-list
         allselect          = 'true',
         reload             = 'true',
         search             = 'true',
+        reorder            = 'true',
         observable-trigger = 'categories-reload'
     )
         #{'yield'}(to='head')

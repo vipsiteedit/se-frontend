@@ -285,7 +285,7 @@ product-edit
                         .col-md-2
                             .form-group
                                 label.control-label Популярность
-                                    input.form-control(name='sort', type='number', step='1', value='{ item.sort }')
+                                    input.form-control(name='sort', type='number', step='1', value='{ parseFloat(item.sort) }')
             // Полный текст
             #product-edit-full-text.tab-pane.fade
                 form(action='', onchange='{ change }', onkeyup='{ change }', method='POST')
