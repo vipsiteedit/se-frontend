@@ -4,6 +4,7 @@
 | import 'components/checkbox-list-inline.tag'
 | import 'pages/settings/add-fields/add-fields-edit-block.tag'
 | import 'pages/products/products/product-edit-images.tag'
+| import 'pages/products/products/product-edit-videos.tag'
 | import 'pages/products/products/product-edit-modifications.tag'
 | import 'pages/products/products/product-edit-parameters.tag'
 | import 'pages/products/products/product-edit-additional-categories.tag'
@@ -43,6 +44,9 @@ product-edit
             li
                 a(data-toggle='tab', href='#product-edit-images', class="fa fa-picture-o", title="Картинки")
                     span.hidden-xs  Картинки
+            li
+                a(data-toggle='tab', href='#product-edit-videos', class="fa fa-file-video-o", title="Видео")
+                    span.hidden-xs  Видео
             li
                 a(data-toggle='tab', href='#product-edit-prices', class="fa fa-cog", title="Цены")
                     span.hidden-xs  Цены
@@ -295,6 +299,11 @@ product-edit
             #product-edit-images.tab-pane.fade
                 form(action='', onchange='{ change }', onkeyup='{ change }', method='POST')
                     product-edit-images(name='images', value='{ item.images }', section='shopprice')
+
+            // Редактирование видео продукта
+            #product-edit-videos.tab-pane.fade
+                form(action='', onchange='{ change }', onkeyup='{ change }', method='POST')
+                    product-edit-videos(name='videos', value='{ item.videos }', section='shopprice')
 
             // Цены на изменение продукта
             #product-edit-prices.tab-pane.fade
