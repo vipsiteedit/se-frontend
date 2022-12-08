@@ -22,7 +22,7 @@
     "jquery": "2.1.4",
     "jquery-treegrid": "^0.3.0",
     "lodash": "^4.11.1",
-    "moment": "^2.15.0",
+    "moment": "^2.29.2",
     "resizable": "^1.2.0",
     "riot": "3.0.0-alpha.2",
     "riot-route": "^2.4.0",
