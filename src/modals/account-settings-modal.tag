@@ -21,8 +21,8 @@ account-settings-modal
         self.app = app
 
         self.beforeSuccess = function (response) {
-            let mainUser = JSON.parse(localStorage.getItem('shop24_main_user'))
-            let config = JSON.parse(localStorage.getItem('shop24'))
+            let mainUser = JSON.parse(localStorage.getItem('market_main_user'))
+            let config = JSON.parse(localStorage.getItem('market'))
 
             response.items = response.items.filter(item => {
                 return (item.login !== config.login) && (item.login !== mainUser.login) && (item.login !== null)

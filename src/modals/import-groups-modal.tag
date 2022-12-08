@@ -303,8 +303,8 @@ import-products-modal
                         let dataI = response;
                         dataI.filename = modal.item.filename
                         dataI.uploadProfile = modal.item.uploadProfile
-                        localStorage.setItem('shop24_import_products', JSON.stringify(dataI))
-                        var items = JSON.parse(localStorage.getItem('shop24_import_products') || '{}')
+                        localStorage.setItem('market_import_products', JSON.stringify(dataI))
+                        var items = JSON.parse(localStorage.getItem('market_import_products') || '{}')
                         modal.modalHide()
                         observable.trigger('products-imports')
                     }

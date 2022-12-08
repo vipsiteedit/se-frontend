@@ -550,10 +550,10 @@ catalog
             self.debuger({ ...self.debugParam, method:"limitChange" })
 
             if (opts.store && opts.store.trim() !== '') {
-                let store = JSON.parse(localStorage.getItem(`shop24_${opts.store}`) || '{}')
+                let store = JSON.parse(localStorage.getItem(`market_${opts.store}`) || '{}')
                 store.offset = 0
                 store.limit = e.target.value
-                localStorage[`shop24_${opts.store}`] = JSON.stringify(store)
+                localStorage[`market_${opts.store}`] = JSON.stringify(store)
             }
             self.pages.current = 1
             self.pages.offset = 0
@@ -654,7 +654,7 @@ catalog
 
         self.on('mount', () => {
             if (opts.store && opts.store.trim() !== '') {
-                let store = JSON.parse(localStorage.getItem(`shop24_${opts.store}`))
+                let store = JSON.parse(localStorage.getItem(`market_${opts.store}`))
                 if (store) {
                     if (store.limit)
                         self.pages.limit = store.limit
@@ -707,18 +707,18 @@ catalog
                 self.update()
             })
             self.tags.datatable.on('sort', () => {
-                let store = JSON.parse(localStorage.getItem(`shop24_${opts.store}`) || '{}')
+                let store = JSON.parse(localStorage.getItem(`market_${opts.store}`) || '{}')
 
                 store.sort = {}
 
                 let sort = self.tags.datatable.getSortedColumn()
 
                 store.sort[sort.name] = sort.dir
-                localStorage[`shop24_${opts.store}`] = JSON.stringify(store)
+                localStorage[`market_${opts.store}`] = JSON.stringify(store)
                 self.reload()
             })
             self.tags.datatable.on('column-toggle', (name, hidden) => {
-                let store = JSON.parse(localStorage.getItem(`shop24_${opts.store}`) || '{}')
+                let store = JSON.parse(localStorage.getItem(`market_${opts.store}`) || '{}')
                 if (!('cols' in store))
                     store.cols = {}
 
@@ -728,7 +728,7 @@ catalog
                     delete store.cols[name]
                 }
 
-                localStorage[`shop24_${opts.store}`] = JSON.stringify(store)
+                localStorage[`market_${opts.store}`] = JSON.stringify(store)
             })
 
         })

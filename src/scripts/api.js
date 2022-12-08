@@ -41,11 +41,11 @@ var API = {
                     break
                 case 401:
                     if (params.unauthorizedReload) {
-                        localStorage.removeItem('shop24')
-                        localStorage.removeItem('shop24_permissions')
-                        localStorage.removeItem('shop24_cookie')
-                        localStorage.removeItem('shop24_user')
-                        localStorage.removeItem('shop24_main_user')
+                        localStorage.removeItem('market')
+                        localStorage.removeItem('market_permissions')
+                        localStorage.removeItem('market_cookie')
+                        localStorage.removeItem('market_user')
+                        localStorage.removeItem('market_main_user')
                         window.location.reload(true)
                     }
                     break
@@ -79,10 +79,29 @@ var API = {
             throw new Error('"Method" parameter is required')
 
         settings.crossDomain = true
-        settings.url = `${this.url}${this.version()}/${params.object}/`
-        settings.method = params.method
+        var method = params.method;
+        settings.url = `${this.url}${this.version()}/${params.object}/${method}/`
+        switch (params.method.toUpperCase()) {
+            case 'GET': settings.method = 'GET'; break
+            case 'FETCH': settings.method = 'POST'; break
+            case 'INFO': settings.method = 'POST'; break
+            case 'POST': settings.method = 'POST'; break
+            case 'SAVE': settings.method = 'PUT'; break
+            case 'PUT': settings.method = 'PUT'; break
+            case 'ADDPRICE': settings.method = 'POST'; break
+            case 'TRANSLIT': settings.method = 'POST'; break
+            case 'UPLOAD': settings.method = 'POST'; break
+            case 'CHECKNAMES': settings.method = 'POST'; break
+            case 'SORT': settings.method = 'POST'; break
+            case 'EXPORT': settings.method = 'POST'; break
+            case 'IMPORT': settings.method = 'POST'; break
+            case 'LOGOUT': settings.method = 'GET'; break
+            case 'DELETE': settings.method = 'DELETE'; break
+            case 'MERGE': settings.method = 'POST'; break
+            default: settings.method = "POST"
+        }
         settings.beforeSend = params.beforeSend || function (request) {
-            request.setRequestHeader("Secookie", params.cookie || localStorage.getItem('shop24_cookie'))
+            request.setRequestHeader("Secookie", params.cookie || localStorage.getItem('market_cookie'))
         }
 
         if (params.data)
@@ -91,28 +110,28 @@ var API = {
         settings.complete = this.complete(params)
         return $.ajax(settings)
     },
-    requestCMS(params) {
-        var settings = {}
+    // requestCMS(params) {
+    //     var settings = {}
 
-        if (!params.object)
-            throw new Error('"Object" parameter is required')
+    //     if (!params.object)
+    //         throw new Error('"Object" parameter is required')
 
-        if (!params.method)
-            throw new Error('"Method" parameter is required')
+    //     if (!params.method)
+    //         throw new Error('"Method" parameter is required')
 
-        settings.crossDomain = true
-        settings.url = `${this.url}2_dev/CMS/${params.object}/`
-        settings.method = params.method
-        settings.beforeSend = params.beforeSend || function (request) {
-                request.setRequestHeader("Secookie", params.cookie || localStorage.getItem('shop24_cookie'))
-            }
+    //     settings.crossDomain = true
+    //     settings.url = `${this.url}2_dev/CMS/${params.object}/`
+    //     settings.method = params.method
+    //     settings.beforeSend = params.beforeSend || function (request) {
+    //             request.setRequestHeader("Secookie", params.cookie || localStorage.getItem('market_cookie'))
+    //         }
 
-        if (params.data)
-            settings.data = JSON.stringify(params.data)
+    //     if (params.data)
+    //         settings.data = JSON.stringify(params.data)
 
-        settings.complete = this.complete(params)
-        return $.ajax(settings)
-    },
+    //     settings.complete = this.complete(params)
+    //     return $.ajax(settings)
+    // },
     upload(params) {
         var settings = {}
 
@@ -130,7 +149,7 @@ var API = {
         settings.contentType = false
 
         settings.beforeSend = (request) => {
-            request.setRequestHeader("Secookie", params.cookie || localStorage.getItem('shop24_cookie'))
+            request.setRequestHeader("Secookie", params.cookie || localStorage.getItem('market_cookie'))
         }
 
         if (params.progress) {
@@ -160,7 +179,7 @@ var API = {
         xhr.open('POST', `${this.url}${this.version()}/${params.object}/`, true)
         xhr.withCredentials = true
         xhr.responseType = 'arraybuffer'
-        xhr.setRequestHeader("Secookie", params.cookie || localStorage.getItem('shop24_cookie'))
+        xhr.setRequestHeader("Secookie", params.cookie || localStorage.getItem('market_cookie'))
 
         xhr.onload = function () {
             if (this.status === 200) {
@@ -205,7 +224,7 @@ var API = {
         xhr.send(JSON.stringify(params.data))
     },
     authCheck(params) {
-        if (localStorage.getItem('shop24_cookie') == null) {
+        if (localStorage.getItem('market_cookie') == null) {
             return
             // if (params && params.error && typeof(params.error) === 'function')
             //     params.error('Не удаётся подключиться к базе данных!', {})
@@ -224,7 +243,7 @@ var API = {
                 settings.method = 'GET'
 
                 settings.beforeSend = (xhr) => {
-                    xhr.setRequestHeader("Secookie", params.cookie || localStorage.getItem('shop24_cookie'))
+                    xhr.setRequestHeader("Secookie", params.cookie || localStorage.getItem('market_cookie'))
                 }
 
                 settings.complete = (xhr) => {

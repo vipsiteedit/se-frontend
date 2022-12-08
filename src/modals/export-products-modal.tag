@@ -97,10 +97,10 @@ export-products-modal
                 success: function(response) {
                     modal.units = {}
                     modal.columns = response['headerCSV']
-                    modal.expModif = (localStorage.getItem('shop24_export_modif') || 'N')
-                    modal.expGroup = (localStorage.getItem('shop24_export_group') || 'N')
-                    let jsonUnits = JSON.parse(localStorage.getItem('shop24_export_products') || '{}')
-                    localStorage.removeItem('shop24_import_products')
+                    modal.expModif = (localStorage.getItem('market_export_modif') || 'N')
+                    modal.expGroup = (localStorage.getItem('market_export_group') || 'N')
+                    let jsonUnits = JSON.parse(localStorage.getItem('market_export_products') || '{}')
+                    localStorage.removeItem('market_import_products')
 
 
                     // слияние данных (данные браузера в приоритете)
@@ -158,9 +158,9 @@ export-products-modal
 
             // сохранение профиля экспорта (растановка чекбоксов)
             var profile = JSON.stringify(modal.units)
-            localStorage.setItem('shop24_export_products', profile)
-            localStorage.setItem('shop24_export_modif', modal.expModif)
-            localStorage.setItem('shop24_export_group', modal.expGroup)
+            localStorage.setItem('market_export_products', profile)
+            localStorage.setItem('market_export_modif', modal.expModif)
+            localStorage.setItem('market_export_group', modal.expGroup)
 
             /**
             * прикрепляем к профилю соотношения полей

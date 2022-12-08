@@ -3,8 +3,13 @@ html {
     overflow-y: scroll;
 }
 
-.btn, .form-control, .well, .well-sm, .nav-tabs > li > a,
-.input-group-addon, .nav-pills > li > a {
+.btn,
+.form-control,
+.well,
+.well-sm,
+.nav-tabs>li>a,
+.input-group-addon,
+.nav-pills>li>a {
     border-radius: 0px !important;
 }
 
@@ -207,7 +212,8 @@ html {
 
 }
 
-.table-hover > tbody > tr:hover > td, .table-hover > tbody > tr:hover > th {
+.table-hover>tbody>tr:hover>td,
+.table-hover>tbody>tr:hover>th {
     background-color: #d9edf7;
     /*color: #ffffff;*/
 }
@@ -217,7 +223,7 @@ html {
     overflow: hidden;
 }
 
-.btn-file > input[type='file'] {
+.btn-file>input[type='file'] {
     position: absolute;
     top: 0;
     right: 0;
@@ -242,15 +248,15 @@ select.form-control::-ms-expand {
     display: none;
 }
 
-.checkbox-inline > label {
+.checkbox-inline>label {
     display: inline-block;
     max-width: 100%;
     margin-bottom: 1px;
     font-weight: 700;
 }
 
-.checkbox-inline > label > input[type="checkbox"],
-.checkbox-inline > label > input[type="radio"] {
+.checkbox-inline>label>input[type="checkbox"],
+.checkbox-inline>label>input[type="radio"] {
     margin: 0 0 1 -20px;
 }
 

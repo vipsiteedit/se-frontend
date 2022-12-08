@@ -189,17 +189,17 @@ app
 
 
         self.logout = () => {
-            localStorage.removeItem('shop24')
-            localStorage.removeItem('shop24_permissions')
-            localStorage.removeItem('shop24_cookie')
-            localStorage.removeItem('shop24_user')
-            localStorage.removeItem('shop24_main_user')
+            localStorage.removeItem('market')
+            localStorage.removeItem('market_permissions')
+            localStorage.removeItem('market_cookie')
+            localStorage.removeItem('market_user')
+            localStorage.removeItem('market_main_user')
             window.location.reload()
         }
 
 
         self.getActiveAccount = () => {
-            let shop = JSON.parse(localStorage.getItem('shop24') || '{}')
+            let shop = JSON.parse(localStorage.getItem('market') || '{}')
             if ('login' in shop) {
                 let { login } = shop
                 let item = app.accounts.filter(item => item.login === login)[0] || {}
@@ -273,7 +273,7 @@ app
         self.on('mount', () => {
             let params = self.parseGetParams()
             if (params.project && params.login && params.password) {
-                localStorage.removeItem('shop24_cookie')
+                localStorage.removeItem('market_cookie')
                 app.login({
                     project: params.project.trim(),
                     serial: params.login.trim(),
@@ -285,28 +285,28 @@ app
                             hash: md5(params.password.trim()),
                         }
 
-                        localStorage.setItem('shop24_main_user', JSON.stringify(mainUser))
-                        localStorage.setItem('shop24_cookie', secookie)
-                        localStorage.setItem('shop24', JSON.stringify(response.config))
+                        localStorage.setItem('market_main_user', JSON.stringify(mainUser))
+                        localStorage.setItem('market_cookie', secookie)
+                        localStorage.setItem('market', JSON.stringify(response.config))
                         if (response.permissions)
-                            localStorage.setItem('shop24_permissions', JSON.stringify(response.permissions))
+                            localStorage.setItem('market_permissions', JSON.stringify(response.permissions))
                         location.search = ''
                     }
                 })
                 return
             }
 
-            if (localStorage.getItem('shop24_cookie') !== null) {
+            if (localStorage.getItem('market_cookie') !== null) {
                 API.authCheck({
                     success(response) {
                         if (response.permissions)
-                            localStorage.setItem('shop24_permissions', JSON.stringify(response.permissions))
+                            localStorage.setItem('market_permissions', JSON.stringify(response.permissions))
 
                         app.init()
                         riot.route.start(true)
                     },
                     error() {
-                        let user = localStorage.getItem('shop24_user')
+                        let user = localStorage.getItem('market_user')
 
                         if (user) {
                             app.restoreSession(user)

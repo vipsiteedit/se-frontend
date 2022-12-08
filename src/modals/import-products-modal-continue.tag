@@ -79,8 +79,8 @@ import-products-modal-continue
 
     script(type='text/babel').
         var self = this
-        var items = JSON.parse(localStorage.getItem('shop24_import_products') || '{}')
-        localStorage.removeItem('shop24_import_products')
+        var items = JSON.parse(localStorage.getItem('market_import_products') || '{}')
+        localStorage.removeItem('market_import_products')
 
         self.item = items.prepare
         self.coincidence = false

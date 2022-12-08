@@ -62,16 +62,16 @@ auth
                         project: response.project
                     }
 
-                    localStorage.setItem('shop24_main_user', JSON.stringify(mainUser))
+                    localStorage.setItem('market_main_user', JSON.stringify(mainUser))
 
                     if (self.remember.checked)
-                        localStorage.setItem('shop24_user', JSON.stringify(response.config))
+                        localStorage.setItem('market_user', JSON.stringify(response.config))
 
                     if (response.permissions)
-                        localStorage.setItem('shop24_permissions', JSON.stringify(response.permissions))
+                        localStorage.setItem('market_permissions', JSON.stringify(response.permissions))
 
-                    localStorage.setItem('shop24_cookie', secookie)
-                    localStorage.setItem('shop24', JSON.stringify(response.config))
+                    localStorage.setItem('market_cookie', secookie)
+                    localStorage.setItem('market', JSON.stringify(response.config))
                     app.init()
                 },
                 error(response) {
