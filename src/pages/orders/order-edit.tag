@@ -20,8 +20,11 @@ order-edit
                 |  Сохранить
             button.btn.btn-default(if='{ !isNew }', onclick='{ reloadButton }', title='Обновить', type='button')
                 i.fa.fa-refresh
-            button.btn.btn-default(onclick='{ send }', title='Отсылать письмо', type='button')
-                i(class='fa fa-paper-plane { text-noactive: !snd }')
+            //button.btn.btn-default(onclick='{ send }', title='Отсылать письмо', type='button')
+            //    i(class='fa fa-paper-plane { text-noactive: !snd }')
+            button.btn.btn-default(onclick='{ mail }', title='Отослать заказ на почту', type='button')
+                i.fa.fa-paper-plane
+                |  Отослать заказ
         .h4 { isNew ? 'Новый заказ' : 'Редактирование заказа № ' + item.id }
 
         ul.nav.nav-tabs.m-b-2
@@ -719,6 +722,18 @@ order-edit
                             self.update()
                         }
                     })
+                }
+            })
+        }
+
+        self.mail = e => {
+            let params = self.item;
+            API.request({
+                object: 'Order',
+                method: 'Mail',
+                data: params,
+                success(response) {
+                   popups.create({title: 'Успех!', text: 'Заказ отправлен на почту!', style: 'popup-success'})
                 }
             })
         }
