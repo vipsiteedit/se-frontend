@@ -264,6 +264,25 @@ discount-edit
         }
 
         self.submit = () => {
+            if (self.item['summFrom'] < 0) {
+                self.item['summFrom'] = 0
+            } 
+            if (self.item['summTo'] < 0) {
+                self.item['summTo'] = 0
+            }
+            if (self.item['summFrom'] > self.item['summTo'] && self.item['summTo'] != 0) {
+                self.item['summTo'] = parseFloat(self.item['summFrom']) + 1
+            }
+            if (self.item['countFrom'] < 0) {
+                self.item['countFrom'] = 0
+            } 
+            if (self.item['countTo'] < 0) {
+                self.item['countTo'] = 0
+            }
+            if (self.item['countFrom'] > self.item['countTo'] && self.item['countTo'] != 0) {
+                self.item['countTo'] = parseInt(self.item['countFrom']) + 1
+            }
+
             var params = self.item
 
             self.error = self.validation.validate(self.item, self.rules)

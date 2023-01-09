@@ -77,7 +77,7 @@ orders-list
             datatable-cell(name='commentary', onclick='{ handlers.copyText }') { row.commentary }
             datatable-cell(name='manager', onclick='{ handlers.copyText }') { row.manager }
         #{'yield'}(to='aggregation')
-            strong  Суммма:
+            strong  Сумма:
             strong  {parent.currTotal.nameFront !== null && parent.currTotal.nameFront !== "" ? parent.currTotal.nameFront : ""}
             strong  { (parent.totalAmount || 0) }
             strong  { parent.currTotal.nameFront !== null && parent.currTotal.nameFront !== "" ? "" : parent.currTotal.nameFlang !== null && parent.currTotal.nameFlang !== "" ? parent.currTotal.nameFlang : parent.currTotal.titleCurr }

@@ -100,7 +100,7 @@ order-edit
                                         datatable-cell(name='count', style="max-width: 20px;")
                                             input(value='{ row.count }', type='number', step='1', min='1',
                                             onchange='{ handlers.numberChange }')
-                                        datatable-cell(name='price' style="max-width: 50px;")
+                                        datatable-cell(name='price' style="max-width: 70px;")
                                             input(value='{ row.price }', type='number', step='1.00', min='0',
                                             onchange='{ handlers.numberChange }')
                                         datatable-cell(name='curr') { (row.curr) }
@@ -180,6 +180,22 @@ order-edit
                             .form-group
                                 label.control-label Дата доставки
                                 datetime-picker.form-control(name='deliveryDate', format='DD.MM.YYYY', value='{ item.deliveryDate }')
+                    .h4 Доставка (заполняет Менеджер)
+                    .row
+                        .col-md-6
+                            .form-group
+                                label.control-label Номер документа
+                                input.form-control(name='deliveryDocNum', value='{ item.deliveryDocNum }')
+                        .col-md-6
+                            .form-group
+                                label.control-label Дата доставки
+                                datetime-picker.form-control(name='deliveryDocDate', format='DD.MM.YYYY', value='{ item.deliveryDocDate }')
+                        .col-md-12
+                            .form-group
+                                label.control-label Служба доставки
+                                input.form-control(name='deliveryServiceName', value='{ item.deliveryServiceName }')
+
+
             #order-edit-pay.tab-pane.fade(if='{ !isNew }')
                 form(action='', onchange='{ change }', onkeyup='{ change }', method='POST')
                     .row
