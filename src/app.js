@@ -126,20 +126,25 @@ app.init = () => {
       },
     });
   } else {
-    API.request({
-      object: "Account",
-      method: "Fetch",
-      unauthorizedReload: false,
-      success(response) {
-        app.mainCookie = localStorage.getItem("market_cookie");
-        if ("items" in response && response.items instanceof Array) {
-          app.accounts = response.items;
-        }
-      },
-      complete() {
-        observable.trigger("auth", app.auth);
-      },
-    });
+    if (localStorage.getItem("market_cookie") !== null) {
+      API.request({
+        object: "Account",
+        method: "Fetch",
+        unauthorizedReload: false,
+        success(response) {
+          app.mainCookie = localStorage.getItem("market_cookie");
+          if ("items" in response && response.items instanceof Array) {
+            app.accounts = response.items;
+          }
+        },
+        complete() {
+          observable.trigger("auth", app.auth);
+        },
+      });
+    } else {
+      localStorage.removeItem("market");
+      localStorage.removeItem("market_user");
+    }
   }
 };
 

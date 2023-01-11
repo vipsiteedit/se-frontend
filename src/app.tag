@@ -312,6 +312,10 @@ app
                             app.restoreSession(user)
                         } else {
                             app.init()
+                            localStorage.removeItem('market_cookie')
+                            localStorage.removeItem('market_permissions')
+                            localStorage.removeItem('market')
+                            localStorage.removeItem('market_user')
                             riot.route.start(true)
                         }
                     }
