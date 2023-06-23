@@ -5,6 +5,10 @@ sudo add-apt-repository ppa:linuxuprising/libpng12
 sudo apt update
 sudo apt install libpng12-0
 
+npm version 6.14.17
+node version v14.21.2
+
+
 
 ## Прочее
 
