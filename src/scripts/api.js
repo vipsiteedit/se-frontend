@@ -40,14 +40,14 @@ var API = {
           if (params.success) params.success(response, xhr);
           break;
         case 401:
-          if (params.unauthorizedReload) {
+          //if (params.unauthorizedReload) {
             localStorage.removeItem("market");
             localStorage.removeItem("market_permissions");
             localStorage.removeItem("market_cookie");
             localStorage.removeItem("market_user");
             localStorage.removeItem("market_main_user");
             window.location.reload(true);
-          }
+          //}
           break;
         case 404:
           if (params.notFoundRedirect) observable.trigger("not-found");
@@ -322,6 +322,7 @@ var API = {
               localStorage.removeItem("market");
               localStorage.removeItem("market_user");
               localStorage.removeItem("market_main_user");
+              window.location.reload(true);
 
               break;
           }

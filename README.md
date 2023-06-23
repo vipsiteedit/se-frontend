@@ -1,5 +1,11 @@
 # se_manager and api
 
+## Установка зависимостей для UBUNTU (для компиляции на UBUNTU)
+sudo add-apt-repository ppa:linuxuprising/libpng12
+sudo apt update
+sudo apt install libpng12-0
+
+
 ## Прочее
 
 - добавить всплывающие подсказки (на примере кнопок товары-добавить)
