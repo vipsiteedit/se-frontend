@@ -113,7 +113,18 @@ order-edit
                                             onchange='{ handlers.stringChange }')
                                 .alert.alert-danger(if='{ error.items }')
                                     | { error.items }
-
+                    //.row
+                        .col-md-2
+                            .form-group(class='{ has-error: error.outmail }')
+                                label.control-label № исх.письма
+                                input.form-control(name='outmail', value='{ item.outmail }')
+                                .help-block { error.outmail }
+                        .col-md-3
+                            .form-group(class='{ has-error: error.outmailDate }')
+                                label.control-label Дата исх.письма
+                                datetime-picker.form-control(name='outmailDate',
+                                format='DD.MM.YYYY', value='{ item.outmailDate }', icon='glyphicon glyphicon-calendar')
+                                .help-block { error.outmailDate }
                     .row
                         .col-md-12
                             .form-group
@@ -282,6 +293,8 @@ order-edit
                         type: 'email'
                     }]
                 },*/
+               /* outmail: 'empty',
+                outmailDate: 'empty'*/
             }
 
             if (self.item && (self.item.idAuthor || self.item.idCompany))
