@@ -1,7 +1,7 @@
 | import 'components/autocomplete.tag'
 | import 'components/datetime-picker.tag'
 | import 'pages/delivery/delivery-list-modal.tag'
-| import 'pages/persons/persons-company-list-modal.tag'
+| import 'pages/persons/persons-list-select-modal.tag'
 | import 'pages/products/modifications/modifications-list-modal.tag'
 | import 'pages/payments/payments-list-modal.tag'
 | import 'pages/payments/payments-add-modal.tag'
@@ -42,20 +42,20 @@ order-edit
                             .form-group
                                 label.control-label Ид
                                 input.form-control(name='id', value='{ item.id }', readonly)
-                        .col-md-2(if='{ !isNew }')
+                        .col-md-1(if='{ !isNew }')
                             .form-group
                                 label.control-label Дата заказа
                                 datetime-picker.form-control(name='dateOrder',
                                 format='DD.MM.YYYY', value='{ item.dateOrder }', icon='glyphicon glyphicon-calendar')
-                        .col-md-3
+                        .col-md-4
                             .form-group(class='{ has-error: (error.idAuthor || error.idCompany) }')
                                 label.control-label Заказчик
                                 .input-group
-                                    .input-group-btn(if='{ (item.idAuthor || item.idCompany) }')
-                                        a.btn.btn-default(target='_blank', href='{item.idAuthor ? "#persons/" + item.idAuthor : "#persons/companies/" + item.idCompany }')
+                                    .input-group-btn(if='{ item.idAuthor }')
+                                        a.btn.btn-default(target='_blank', href='{"#persons/" + item.idAuthor }')
                                             i.fa.fa-eye
                                     input.form-control(name='idAuthor',
-                                    value='{ (item.idAuthor || item.idCompany) ? (item.idAuthor || item.idCompany) + " - " + item.customer : "" }', readonly)
+                                    value='{ (!item.company) ? item.idAuthor + " - " + item.customer :  item.idAuthor + " - " + item.customer + " ("+ item.company + ")" }', readonly)
                                     .input-group-btn
                                         .btn.btn-default(onclick='{ changeCustomer }')
                                             i.fa.fa-list
@@ -575,23 +575,18 @@ order-edit
 
         self.changeCustomer = () => {
             self.debuger({ ...self.debugParam, method:"changeCustomer" })
-            modals.create('persons-company-list-modal',{
+            modals.create('persons-list-select-modal',{
                 type: 'modal-primary',
                 size: 'modal-lg',
                 submit() {
-                    let _this = this.tags['bs-modal']
-                    let items = _this.tags[_this.tab].tags.datatable.getSelectedRows()
+                    //let _this = this.tags['bs-modal']
+                    let items = this.tags.catalog.tags.datatable.getSelectedRows()
                     if (!items.length) return
-
-                    if (_this.tab == 'contacts') {
-                        self.item.idAuthor = items[0].id
-                        self.item.customer = items[0].displayName
-                        self.item.idCompany = null
-                    } else {
-                        self.item.idCompany = items[0].id
-                        self.item.customer = items[0].name
-                        self.item.idAuthor = null
-                    }
+                    console.log(items[0]);
+                    self.item.idAuthor = items[0].id
+                    self.item.customer = items[0].displayName
+                    self.item.company = items[0].company
+                    self.item.idCompany = null
 
                     self.update()
                     this.modalHide()

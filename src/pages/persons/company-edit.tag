@@ -63,15 +63,7 @@ company-edit
                                 label.control-label Адрес
                                 input.form-control(name='address', type='text', value='{ item.address }')
                                 .help-block { error.address }
-                    .row
-                        .col-md-6
-                            .form-group
-                                label.control-label Логин
-                                input.form-control(name='username', type='text', value='{ item.username }')
-                        .col-md-6
-                            .form-group
-                                label.control-label Пароль
-                                input.form-control(name='password', type='password', value='{ item.password }')
+
                     .row
                         .col-md-12
                             .form-group(class='{ has-error: error.note }')

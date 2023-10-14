@@ -15,6 +15,7 @@ persons-list-select-modal
                 #{'yield'}(to='body')
                     datatable-cell(name = 'id') { row.id }
                     datatable-cell(name = 'displayName') { row.displayName }
+                    datatable-cell(name = 'company') { row.company }
                     datatable-cell(name = 'username') { row.username }
         #{'yield'}(to='footer')
             button(
@@ -36,6 +37,7 @@ persons-list-select-modal
         self.cols = [
             {name: 'id',          value: '#'},
             {name: 'displayName', value: 'Ф.И.О'},
+            {name: 'comany',     value: 'Компания'},
             {name: 'username',    value: 'Логин'}
         ]
 
@@ -43,6 +45,7 @@ persons-list-select-modal
             let items = this.tags.datatable.getSelectedRows()
             if (!items.length) return
             self.item.idAuthor  = items[0].id
+            self.item.company   = item[0].company
             self.item.customer  = items[0].displayName
             self.item.idCompany = null
             opts.submit.bind(this)()

@@ -3,6 +3,7 @@
 | import 'pages/persons/persons-category-select-modal.tag'
 | import 'pages/persons/person-balance-modal.tag'
 | import 'pages/persons/persons-list-select-modal.tag'
+| import 'pages/persons/persons-company-list-modal.tag'
 | import 'pages/settings/permissions/permission-user-list-modal.tag'
 | import 'pages/settings/add-fields/add-fields-edit-block.tag'
 | import md5 from 'blueimp-md5/js/md5.min.js'
@@ -24,7 +25,6 @@ person-edit
         ul.nav.nav-tabs.m-b-2
             li.active #[a(data-toggle='tab', href='#person-edit-home') Информация]
             li #[a(data-toggle='tab', href='#person-edit-documents') Паспортные данные]
-            li #[a(data-toggle='tab', href='#person-edit-requisites') Реквизиты компании]
             li(if='{ checkPermission("orders", "1000") }') #[a(data-toggle='tab', href='#person-edit-orders') Заказы]
             li(if='{ checkPermission("products", "1000") }') #[a(data-toggle='tab', href='#person-edit-groups') Группы]
             li #[a(data-toggle='tab', href='#person-edit-balance') Лицевой счёт]
@@ -93,16 +93,18 @@ person-edit
                                         input.form-control(name='password', type='password', value='{ item.password }')
                             .row
                                 .col-md-6
-                                    .form-group(class='{ has-error: (error.idUp) }')
-                                            label.control-label Рекомендатель
+                                    .form-group()
+                                            label.control-label Компания
                                             .input-group
-                                                input.form-control(name='idUp', value='{ item.referName }', readonly)
+                                                .input-group-btn(if='{ item.companyId }')
+                                                    a.btn.btn-default(target='_blank', href='{"#persons/companies/" + item.companyId }')
+                                                        i.fa.fa-eye
+                                                input.form-control(name='idUp', value='{ item.company }', readonly)
                                                 .input-group-btn
-                                                    .btn.btn-default(onclick='{ changeReferContact }')
+                                                    .btn.btn-default(onclick='{ changeCompany }')
                                                         i.fa.fa-list.text-primary
-                                                    .btn.btn-default(onclick='{ removeReferContact }')
+                                                    .btn.btn-default(onclick='{ removeCompany }')
                                                         i.fa.fa-times.text-danger
-                                            .help-block { (error.idUp) }
                                 .col-md-6
                                     .form-group
                                         label.control-label Тип цены:
@@ -120,6 +122,17 @@ person-edit
                                                 .btn.btn-default(onclick='{ removeManager }')
                                                     i.fa.fa-times.text-danger
                                         .help-block { (error.managerId) }
+                                .col-md-6
+                                    .form-group(class='{ has-error: (error.idUp) }')
+                                            label.control-label Рекомендатель
+                                            .input-group
+                                                input.form-control(name='idUp', value='{ item.referName }', readonly)
+                                                .input-group-btn
+                                                    .btn.btn-default(onclick='{ changeReferContact }')
+                                                        i.fa.fa-list.text-primary
+                                                    .btn.btn-default(onclick='{ removeReferContact }')
+                                                        i.fa.fa-times.text-danger
+                                            .help-block { (error.idUp) }
 
 
                             div(if='{ item.customFields }')
@@ -162,50 +175,6 @@ person-edit
                                 label.control-label Регистрационные данные
                                 textarea.form-control(rows='5', name='docRegistr',
                                 style='min-width: 100%; max-width: 100%;', value='{ item.docRegistr }')
-
-
-                #person-edit-requisites.tab-pane.fade
-                    .row
-                        .col-md-6
-                            .form-group
-                                label.control-label Наименование компании
-                                input.form-control(name='company', type='text', value='{ item.company }')
-                        .col-md-6
-                            .form-group
-                                label.control-label Директор
-                                input.form-control(name='director', type='text', value='{ item.director }')
-                    .row
-                        .col-md-6
-                            .form-group
-                                label.control-label Телефон
-                                input.form-control(name='tel', type='text', value='{ item.tel }')
-                        .col-md-6
-                            .form-group
-                                label.control-label Факс
-                                input.form-control(name='fax', type='text', value='{ item.fax }')
-                    .row
-                        .col-md-6
-                            .form-group
-                                label.control-label Юридический адрес
-                                input.form-control(name='uradres', type='text', value='{ item.uradres }')
-                        .col-md-6
-                            .form-group
-                                label.control-label Почтовый адрес
-                                input.form-control(name='fizadres', type='text', value='{ item.fizadres }')
-                    .row(if='{item.docfile}')
-                        .col-sm-12
-                            .form-group
-                                label.control-label Файлы документов
-                                ul.list-group
-                                    li.list-group-item(each='{item.docfile}')
-                                        a(href='{ link }', target='_blank', title='Скачать файл') { name}
-                    .row
-                        .col-md-6
-                            h4 Регистрационные и банковские реквизиты
-                            datatable(rows="{ item.companyRequisites }", handlers='{ companyRequisitesHandlers }')
-                                datatable-cell(name='name') { row.title }
-                                datatable-cell(name='value')
-                                    input(type='text', value='{ row.value }', oninput='{ handlers.valueChange }')
 
                 #person-edit-orders.tab-pane.fade(if='{ checkPermission("orders", "1000") }')
                     .row
@@ -372,20 +341,21 @@ person-edit
                 type: 'modal-primary',
                 submit() {
                     self.item.groups = self.item.groups || []
-                    let items = this.tags.catalog.getSelectedMode()
+                    let items = this.tags.catalog.tags.datatable.getSelectedRows()
+                    //let items = this.tags.catalog.getSelectedMode()
 
                     let ids = self.item.groups.map(item => {
                         return item.id
                     })
-
-                    items.ids.forEach(item => {
+                    console.log(items);
+                    items.forEach(item => {
                         if (ids.indexOf(item.id) === -1) {
-                            self.item.groups.push({id : item,
-                                                   name: "0"
-                            })
+                            self.item.groups.push(item)
                         }
                     })
 
+
+ 
                     if (self.datacatalog.ContactCategory &&
                         self.datacatalog.Contact
                     ) {                                                     // переносим id и name в таблицу групп
@@ -395,12 +365,8 @@ person-edit
                             iddatacatalog[item.id] = item
                         })
 
-                        items.ids.forEach(item => {                           // по id составляем окончательный массив
-                            var unit = {
-                                id  : item,
-                                name: iddatacatalog[item]["name"]
-                            }
-                            self.datacatalog.Contact.push(unit)
+                        items.forEach(item => {                           // по id составляем окончательный массив
+                            self.datacatalog.Contact.push(item)
                         })
 
                         var uniq = {}
@@ -618,6 +584,31 @@ person-edit
                     self.update()
                 }
             })
+        }
+
+        self.changeCompany = () => {
+            self.debuger({ ...self.debugParam, method:"changeCompany" })
+            modals.create('persons-company-list-modal',{
+                type: 'modal-primary',
+                size: 'modal-lg',
+                submit() {
+                   // let _this = this.tags['bs-modal']
+                    let items = this.tags.companies.tags.datatable.getSelectedRows()
+                    console.log(items)
+                    if (!items.length) return
+
+                    self.item.companyId = items[0].id
+                    self.item.company = items[0].name
+                    self.update()
+                    this.modalHide()
+                }
+            })
+        }
+
+        self.removeCompany = () => {
+            self.debuger({ ...self.debugParam, method:"removeCompany" })
+            self.item.companyId = null
+            self.item.company = null
         }
 
         self.changeManager = () => {
