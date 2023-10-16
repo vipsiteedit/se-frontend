@@ -21,7 +21,7 @@ order-edit
             button.btn.btn-default(if='{ !isNew }', onclick='{ reloadButton }', title='Обновить', type='button')
                 i.fa.fa-refresh
             //button.btn.btn-default(onclick='{ send }', title='Отсылать письмо', type='button')
-            //    i(class='fa fa-paper-plane { text-noactive: !snd }')
+                i(class='fa fa-paper-plane { text-noactive: !snd }')
             button.btn.btn-default(onclick='{ mail }', title='Отослать заказ на почту', type='button')
                 i.fa.fa-paper-plane
                 |  Отослать заказ
@@ -48,18 +48,18 @@ order-edit
                                 datetime-picker.form-control(name='dateOrder',
                                 format='DD.MM.YYYY', value='{ item.dateOrder }', icon='glyphicon glyphicon-calendar')
                         .col-md-4
-                            .form-group(class='{ has-error: (error.idAuthor || error.idCompany) }')
+                            .form-group(class='{ has-error: (error.idAuthor) }')
                                 label.control-label Заказчик
                                 .input-group
                                     .input-group-btn(if='{ item.idAuthor }')
                                         a.btn.btn-default(target='_blank', href='{"#persons/" + item.idAuthor }')
                                             i.fa.fa-eye
                                     input.form-control(name='idAuthor',
-                                    value='{ (!item.company) ? item.idAuthor + " - " + item.customer :  item.idAuthor + " - " + item.customer + " ("+ item.company + ")" }', readonly)
+                                    value='{ (!item.company) ? item.idAuthor + " - " + item.customer :  item.idAuthor + " - "  +  item.company + " ИНН:" + item.inn+    " ("+item.customer+")" }', readonly)
                                     .input-group-btn
                                         .btn.btn-default(onclick='{ changeCustomer }')
                                             i.fa.fa-list
-                                .help-block { (error.idAuthor || error.idCompany) }
+                                .help-block { (error.idAuthor) }
                         .col-md-2
                             .form-group
                                 label.control-label Статус заказа

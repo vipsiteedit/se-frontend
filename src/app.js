@@ -61,7 +61,11 @@ app.login = (params) => {
 };
 
 app.init = () => {
-  let storage = JSON.parse(localStorage.getItem("market") || "{}");
+  let res = localStorage.getItem('market');
+  if (!res || res === undefined || res == 'undefined') {
+      res = '{}'
+  }
+  //let storage = JSON.parse(localStorage.getItem("market") || "{}");
 
   if (storage && storage.domain) {
     app.config.project = storage.project;
