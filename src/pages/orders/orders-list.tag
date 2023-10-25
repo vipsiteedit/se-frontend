@@ -63,7 +63,7 @@ orders-list
         #{'yield'}(to="body")
             datatable-cell(name='id', onclick='{ handlers.copyText }') { row.id }
             datatable-cell.text-right(name='dateOrder', onclick='{ handlers.copyText }') { row.dateOrderDisplay }
-            datatable-cell(name='customer', onclick='{ handlers.copyText }') { (!row.company) ? row.customer : row.company + " ИНН:" +row.inn+ " ("+row.customer+")" }
+            datatable-cell(name='customer', onclick='{ handlers.copyText }') { (!row.company) ? row.customer : row.company + " #" +row.inn+ " ("+row.customer+")" }
             datatable-cell(name='customerPhone', onclick='{ handlers.copyText }') { row.customerPhone }
             datatable-cell.text-right(name='amount', onclick='{ handlers.copyText }')
                 span(style='color: #ccc') {row.nameFront !== null && row.nameFront !== "" ? row.nameFront : ""}

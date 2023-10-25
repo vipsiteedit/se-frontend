@@ -65,11 +65,11 @@ app.init = () => {
   if (!res || res === undefined || res == 'undefined') {
       res = '{}'
   }
-  //let storage = JSON.parse(localStorage.getItem("market") || "{}");
+  let storage = JSON.parse(res);
 
   if (storage && storage.domain) {
-    app.config.project = storage.project;
-    app.config.version = storage.version;
+    app.config.project = storage.project || "";
+    app.config.version = storage.version || "";
     app.config.lang = "rus";
     app.config.projectURL = `${storage.domain}/`;
     app.config.isAdmin = storage.isAdmin || false;
