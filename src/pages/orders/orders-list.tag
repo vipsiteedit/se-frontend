@@ -1,5 +1,6 @@
 | import debounce from 'lodash/debounce'
 | import 'components/catalog.tag'
+| import './order-select-delivery-modal.tag'
 | import moment from 'moment'
 
 orders-list
@@ -49,12 +50,27 @@ orders-list
                             label
                                 input(type='checkbox', data-name='isDelete', data-bool='Y,N', data-required='true')
                                 | Отменённые
-
         #{'yield'}(to='head')
+            .dropdown(if='{ checkPermission("orders", "0010") && selectedCount > 0 }', style='display: inline-block;')
+                button.btn.btn-default.dropdown-toggle(data-toggle="dropdown", aria-haspopup="true", type='button', aria-expanded="true")
+                    | Действия&nbsp;
+                    span.caret
+                ul.dropdown-menu
+                    //li(onclick='{ handlers.statusPayee }')
+                        a(href='#')
+                            i.fa.fa-fw.fa-pencil
+                            |  Перевести в оплаченные
+                    li(onclick='{ handlers.statusDelivery }')
+                        a(href='#')
+                            i.fa.fa-fw.fa-car
+                            |  Статус доставки
             divider
-            button.btn.btn-primary(
+            button.btn.btn-primary(if='{selectedCount > 0}',
             type='button', onclick='{ parent.exportOrder }', title='Экспорт заказа в XLS')
                 i.fa.fa-file-excel-o
+            button.btn.btn-success(if='{selectedCount > 0}'
+            type='button', onclick='{ parent.exportPdf }', title='Экспорт заказа в PDF')
+                i.fa.fa-file-pdf-o
             button.btn.btn-primary(
             type='button', onclick='{ parent.exportOrders }', title='Экспорт')
                 i.fa.fa-upload
@@ -132,6 +148,30 @@ orders-list
             deliveryText: self.deliveryText,
             copyText: function(elem) {
                 //copyToClipboard(elem.target)
+            },
+            statusDelivery: function(e) {
+                let ids = this.tags.datatable.getSelectedRows().map(item => item.id).join(',')
+                modals.create('order-select-delivery-modal', {
+                    type: 'modal-primary',
+                    submit() {
+                        let _this = this
+                        let item = this.item
+                        console.log(this.item)
+                        //let params = self.tags.catalog.getSelectedMode()
+                        
+                        item.ids = ids
+                        API.request({
+                            object: 'Order',
+                            method: 'MultiSave',
+                            data: item,
+                            success(response) {
+                                _this.modalHide()
+                                self.tags.catalog.reload()
+                            }
+                        })
+                    }
+                })
+                //console.log(ids)
             }
         }
 
@@ -179,6 +219,48 @@ orders-list
                     document.body.appendChild(a)
                     a.click()
                     a.remove()
+                    self.update()
+                }
+            })
+        }
+
+        self.exportPdf = () => {
+            self.debuger({ ...self.debugParam, method:"exportPdf" })
+            let items = self.tags.catalog.tags.datatable.getSelectedRows()
+            if (!items.length)
+                return
+
+            let id = items[0]["id"]
+            API.request({
+                object: 'Order',
+                method: 'ExportPdf',
+                //responseType: "blob",
+                data: { id },
+                success(response) {
+                   /* const url = window.URL.createObjectURL(
+                        new Blob([response], {
+                            type: "application/pdf",
+                        })
+                    );
+                    const link = document.createElement("a");
+
+                    link.href = url;
+                    link.target = "_blank";
+                    link.setAttribute("download", "report_order"+id+".pdf");
+                    document.body.appendChild(link);
+                    link.click();
+                    link.remove();
+
+                */
+                
+                    let a = document.createElement('a')
+                    a.href = response.url
+                    a.target = "_blank";
+                    a.download = response.name
+                    document.body.appendChild(a)
+                    a.click()
+                    a.remove()
+                    
                     self.update()
                 }
             })
