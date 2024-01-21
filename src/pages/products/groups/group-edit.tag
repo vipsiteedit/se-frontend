@@ -73,18 +73,24 @@ group-edit
                                             option(each='{ item.modificationsGroups }', value='{ id }',
                                             selected='{ id == item.idModificationGroupDef }', no-reorder) { name }
                             .row
-                                .col-md-3
+                                .col-md-2
                                     label.hidden-xs &nbsp;
                                     .checkbox
                                         label
                                             input(name='active', type='checkbox', checked='{ item.active == "Y" }')
                                             | Отображать на сайте
-                                .col-md-3
+                                .col-md-2
                                     label.hidden-xs &nbsp;
                                     .checkbox
                                         label
                                             input(name='discount', type='checkbox', checked='{ item.discount == "Y" }')
                                             | Предоставлять скидку
+                                .col-md-2
+                                    label.hidden-xs &nbsp;
+                                    .checkbox
+                                        label
+                                            input(name='isBox', type='checkbox', checked='{ item.isBox }')
+                                            | Требуется выбор упаковки
                                 .col-md-2
                                     .form-group
                                         label.control-label Порядок вывода

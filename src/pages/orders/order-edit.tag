@@ -80,6 +80,15 @@ order-edit
                                     option(each='{ manager in managers }', value='{ manager.id }',
                                     selected='{ manager.id == item.idAdmin }', no-reorder) { manager.title }
                     .row
+                        .col-md-6
+                            .form-group
+                                label.control-label №, дата исх.письма
+                                .col-md-6
+                                    input.form-control(name='numberOutMail', value='{ item.numberOutMail }')
+                                .col-md-6
+                                    datetime-picker.form-control(name='dateOrderOutMail',
+                                    format='DD.MM.YYYY', value='{ item.dateOrderOutMail }', icon='glyphicon glyphicon-calendar')
+                    .row
                         .col-md-12
                             .well.well-sm
                                 catalog-static(name='items', rows='{ item.items }', cols='{ itemsCols }', remove='{item.status=="N"}',

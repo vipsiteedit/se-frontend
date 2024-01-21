@@ -1,4 +1,4 @@
-| import Chart from 'chart.js/src/chart.js'
+| import Chart from 'chart.js'
 | import 'chartjs-funnel/src/chart.funnel.js'
 | import './chart-funnel.extend.js'
 chart
