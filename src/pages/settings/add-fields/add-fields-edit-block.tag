@@ -68,7 +68,7 @@ add-fields-edit-block-group
                             | { option }
                     // Date
                     datetime-picker.form-control(if='{ field.type == "date" }', required='{ field.required }', format='YYYY-MM-DD', value='{ field.value }')
-                    a.form-control(if='{ field.type == "file"}', href='{ field.url}', target='_blank') { field.value}
+                    a.form-control(if='{ field.type == "file" && field.value }', href='{ field.url}', target='_blank') { field.value }
                     .help-block { field.description }
 
     script(type='text/babel').
