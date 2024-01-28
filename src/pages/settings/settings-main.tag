@@ -74,8 +74,12 @@ settings-main
                             .form-group
                                 label.control-label Доставка (город отправления)
                                 input.form-control(name='cityFromDelivery', type='text', value='{ item.cityFromDelivery }')
+                        .col-md-6
+                            .form-group
+                                label.control-label Сообщение при блокировке корзины
+                                textarea.form-control(name='textlockcard', value='{ item.textlockcard }')
                 .row(if='{ app.config.isAdmin }')
-                    .col-md-12
+                    .col-md-6
                         .form-group
                             .form-inline
                                 .form-group
@@ -83,6 +87,13 @@ settings-main
                                 .form-group
                                     .btn.btn-file.btn-primary Восстановить БД из резервной копии
                                         input(name='file', type='file', accept='.arh', onchange='{ restoreDB }')
+                    col-md-6
+                        .form-group
+                            label.hidden-xs &nbsp;
+                                .checkbox
+                                    label
+                                        input(type='checkbox', name='isLockcard', onchange='{ changeSettings }', checked='{ (item.isLockcard=="Y") }',  data-bool='Y,N')
+                                        | Заблокировать корзину
 
             #settings-values.tab-pane.fade
                 form(action='', onchange='{ changeSettings }', method='POST')
@@ -200,6 +211,11 @@ settings-main
 
         self.changeSettings = e => {
             self.debuger({ ...self.debugParam, method:"changeSettings" })
+            if (e.target.name == 'isLockcard') {
+                self.item[e.target.name] = e.target.checked ? 'Y' : 'N'
+                e.target.value = self.item[e.target.name]
+                console.log(e.target.value);
+            }
             if (self.checkPermission('settings', '0010')) {
                 if(e.target.localName == "select"){
                     var index = e.target.selectedIndex
