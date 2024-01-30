@@ -76,7 +76,7 @@ settings-main
                                 input.form-control(name='cityFromDelivery', type='text', value='{ item.cityFromDelivery }')
                         .col-md-6
                             .form-group
-                                label.control-label Сообщение при блокировке корзины
+                                label.control-label Сообщение при блокировании приема заказов
                                 textarea.form-control(name='textlockcard', value='{ item.textlockcard }')
                 .row(if='{ app.config.isAdmin }')
                     .col-md-6
@@ -93,7 +93,7 @@ settings-main
                                 .checkbox
                                     label
                                         input(type='checkbox', name='isLockcard', onchange='{ changeSettings }', checked='{ (item.isLockcard=="Y") }',  data-bool='Y,N')
-                                        | Заблокировать корзину
+                                        | Приостановить прием заказов
 
             #settings-values.tab-pane.fade
                 form(action='', onchange='{ changeSettings }', method='POST')
