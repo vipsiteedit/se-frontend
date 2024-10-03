@@ -47,7 +47,7 @@ news-edit
                                 .col-md-2
                                     .form-group
                                         label.control-label Дата
-                                        datetime-picker.form-control(name='newsDate', format='DD.MM.YYYY', value='{ item.newsDateDisplay }', title='Дата публикации')
+                                        datetime-picker.form-control(name='newsDate', format='DD.MM.YYYY hh:mm', value='{ item.newsDateDisplay }', title='Дата публикации')
                                 .col-md-4
                                     .form-group
                                         label.control-label Категория

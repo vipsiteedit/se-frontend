@@ -166,15 +166,25 @@ app.restoreSession = (user) => {
       request.setRequestHeader("Project", params.project);
     },
     success(response) {
-      if (response.permissions) {
-        localStorage.setItem("market_permissions", response.permissions);
-        app.permissions = response.permissions;
-      }
+      if (response.status != 401) {
+        if (response.permissions) {
+          localStorage.setItem("market_permissions", response.permissions);
+          app.permissions = response.permissions;
+        }
 
-      localStorage.setItem("market_cookie", secookie);
-      localStorage.setItem("market", JSON.stringify(response.config));
-      app.init();
-      riot.route.start(true);
+        localStorage.setItem("market_cookie", secookie);
+        localStorage.setItem("market", JSON.stringify(response.config));
+        app.init();
+        riot.route.start(true);
+      } else {
+        localStorage.removeItem("market");
+        localStorage.removeItem("market_permissions");
+        localStorage.removeItem("market_cookie");
+        localStorage.removeItem("market_user");
+        localStorage.removeItem("market_main_user");
+        observable.trigger("auth", true);
+        window.location.reload(true);
+      }
     },
     error() {
       localStorage.removeItem("market");
@@ -182,7 +192,8 @@ app.restoreSession = (user) => {
       localStorage.removeItem("market_cookie");
       localStorage.removeItem("market_user");
       localStorage.removeItem("market_main_user");
-      observable.trigger("auth", app.auth);
+      observable.trigger("auth", true);
+      window.location.reload(true);
     },
   });
 };
