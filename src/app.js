@@ -135,9 +135,18 @@ app.init = () => {
         method: "Fetch",
         unauthorizedReload: false,
         success(response) {
-          app.mainCookie = localStorage.getItem("market_cookie");
-          if ("items" in response && response.items instanceof Array) {
-            app.accounts = response.items;
+          if (response) {
+            app.mainCookie = localStorage.getItem("market_cookie");
+            if ("items" in response && response.items instanceof Array) {
+              app.accounts = response.items;
+            }
+          } else {
+            localStorage.removeItem("market");
+            localStorage.removeItem("market_permissions");
+            localStorage.removeItem("market_cookie");
+            localStorage.removeItem("market_user");
+            localStorage.removeItem("market_main_user");
+            observable.trigger("auth", app.auth);
           }
         },
         complete() {
